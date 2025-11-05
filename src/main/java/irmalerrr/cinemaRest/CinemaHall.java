@@ -1,6 +1,5 @@
 package irmalerrr.cinemaRest;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
