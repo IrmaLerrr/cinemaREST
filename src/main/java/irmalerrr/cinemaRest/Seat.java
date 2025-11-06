@@ -1,27 +1,26 @@
 package irmalerrr.cinemaRest;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
-@AllArgsConstructor
-public class Seat {
+import java.util.UUID;
 
+@Data
+public class Seat {
     private int row;
     private int column;
     private int price;
-    @JsonIgnore
     private boolean booked;
+    private String token;
 
     public Seat(int row, int column) {
         this.row = row;
         this.column = column;
-        this.price = row > 4 ? 8 : 10;
+        this.price = calculatePrice(row);
         this.booked = false;
+        this.token = UUID.randomUUID().toString();
     }
 
-    // constructor from lombok
-    // getters and setters from lombok
-
+    private int calculatePrice(int row) {
+        return row > 4 ? 8 : 10;
+    }
 }
