@@ -9,8 +9,17 @@ public class CinemaController {
 
     private final CinemaHall cinemaHall = new CinemaHall(9, 9);
 
+    @GetMapping("stats")
+    public Statistic getStats(@RequestParam Password password) {
+        if (Objects.equals(password.getPassword(), "super_secret")) {
+            return cinemaHall.getStatistic();
+        } else {
+            throw new BadRequestException("The password is wrong!");
+        }
+    }
+
     @GetMapping("seats")
-    public CinemaHallDto getSeats() {
+    public CinemaHallDto getStatistic() {
         return new CinemaHallDto(cinemaHall);
     }
 
@@ -27,6 +36,7 @@ public class CinemaController {
             throw new BadRequestException("The ticket has been already purchased!");
         }
         seat.setBooked(true);
+        cinemaHall.getStatistic().changeStatistic(1, seat.getPrice());
         return new SeatDto.PurchaseResponse(seat.getToken(), new SeatDto.SeatResponse(seat));
     }
 
@@ -35,6 +45,7 @@ public class CinemaController {
         for (Seat seat : cinemaHall.getSeats()) {
             if (Objects.equals(seat.getToken(), token.getToken())) {
                 seat.setBooked(false);
+                cinemaHall.getStatistic().changeStatistic(1, seat.getPrice());
                 return new SeatDto.SeatResponse(seat);
             }
         }
