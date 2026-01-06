@@ -1,4 +1,4 @@
-package irmalerrr.cinemaRest;
+package irmalerrr.cinemaRest.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,11 +9,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reserved {
+public class Reservation {
     private Seat seat;
     private String token;
 
-    public Reserved(Seat seat) {
+    public Reservation(Seat seat) {
         this.seat = seat;
         this.token = UUID.randomUUID().toString();
     }

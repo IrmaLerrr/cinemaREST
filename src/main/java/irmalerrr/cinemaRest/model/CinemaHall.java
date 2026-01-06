@@ -1,6 +1,8 @@
-package irmalerrr.cinemaRest;
+package irmalerrr.cinemaRest.model;
 
 import lombok.Data;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ public class CinemaHall {
     private int columns;
     private List<Seat> seats;
     private Statistic statistic;
-    private List<Reserved> reserved = new ArrayList<>();
+    private List<Reservation> reserved = new ArrayList<>();
 
     public CinemaHall(int rows, int columns) {
         this.rows = rows;
@@ -30,7 +32,7 @@ public class CinemaHall {
     }
 
     public String bookSeat(Seat seat) {
-        Reserved temp = new Reserved(seat);
+        Reservation temp = new Reservation(seat);
         reserved.add(temp);
         seat.setBooked(true);
         this.getStatistic().changeStatistic(1, seat.getPrice());
@@ -38,7 +40,7 @@ public class CinemaHall {
     }
 
     public Seat returnSeat(String token) {
-        for (Reserved reserv : this.getReserved()) {
+        for (Reservation reserv : this.getReserved()) {
             if (Objects.equals(reserv.getToken(), token)) {
                 Seat seat = reserv.getSeat();
                 if (seat.isBooked()) {
@@ -46,10 +48,10 @@ public class CinemaHall {
                     this.getStatistic().changeStatistic(-1, -seat.getPrice());
                     return seat;
                 } else {
-                    throw new BadRequestException("Wrong token!");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong token!");
                 }
             }
         }
-        throw new BadRequestException("Wrong token!");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong token!");
     }
 }

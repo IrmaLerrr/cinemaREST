@@ -1,5 +1,6 @@
-package irmalerrr.cinemaRest;
+package irmalerrr.cinemaRest.dto;
 
+import irmalerrr.cinemaRest.model.CinemaHall;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

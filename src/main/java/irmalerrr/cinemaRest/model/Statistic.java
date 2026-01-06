@@ -1,4 +1,4 @@
-package irmalerrr.cinemaRest;
+package irmalerrr.cinemaRest.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
