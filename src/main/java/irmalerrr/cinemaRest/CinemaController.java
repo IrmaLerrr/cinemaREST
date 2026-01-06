@@ -1,6 +1,8 @@
 package irmalerrr.cinemaRest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
 
@@ -10,21 +12,25 @@ public class CinemaController {
     private final CinemaHall cinemaHall = new CinemaHall(9, 9);
 
     @GetMapping("stats")
-    public Statistic getStats(@RequestParam Password password) {
-        if (Objects.equals(password.getPassword(), "super_secret")) {
+    public Statistic getStats(@RequestParam(value = "password", required = false) String password) {
+        System.out.println("stats request " + password);
+        if (Objects.equals(password, "super_secret")) {
             return cinemaHall.getStatistic();
         } else {
-            throw new BadRequestException("The password is wrong!");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The password is wrong!");
         }
     }
 
+
     @GetMapping("seats")
     public CinemaHallDto getStatistic() {
+        System.out.println("purchase request get seats");
         return new CinemaHallDto(cinemaHall);
     }
 
     @PostMapping("purchase")
     public SeatDto.PurchaseResponse purchaseSeat(@RequestBody SeatDto.PurchaseRequest seatRequest) {
+        System.out.println("purchase request " + seatRequest);
         int row = seatRequest.getRow();
         int column = seatRequest.getColumn();
 
@@ -35,20 +41,15 @@ public class CinemaController {
         if (seat.isBooked()) {
             throw new BadRequestException("The ticket has been already purchased!");
         }
-        seat.setBooked(true);
-        cinemaHall.getStatistic().changeStatistic(1, seat.getPrice());
-        return new SeatDto.PurchaseResponse(seat.getToken(), new SeatDto.SeatResponse(seat));
+        String token = cinemaHall.bookSeat(seat);
+        System.out.println("returned " + token);
+        return new SeatDto.PurchaseResponse(token, new SeatDto.SeatResponse(seat));
     }
 
     @PostMapping("return")
-    public SeatDto.SeatResponse returnSeat(@RequestBody SeatDto.Token token) {
-        for (Seat seat : cinemaHall.getSeats()) {
-            if (Objects.equals(seat.getToken(), token.getToken())) {
-                seat.setBooked(false);
-                cinemaHall.getStatistic().changeStatistic(1, seat.getPrice());
-                return new SeatDto.SeatResponse(seat);
-            }
-        }
-        throw new BadRequestException("Wrong token!");
+    public SeatDto.ReturnResponse returnSeat(@RequestBody CinemaHallDto.Token token) {
+        System.out.println("return request " + token.getToken());
+        Seat seat = cinemaHall.returnSeat(token.getToken());
+        return new SeatDto.ReturnResponse(seat);
     }
 }

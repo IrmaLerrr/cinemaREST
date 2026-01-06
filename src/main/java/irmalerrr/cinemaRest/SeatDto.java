@@ -2,11 +2,12 @@ package irmalerrr.cinemaRest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public class SeatDto {
-
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class PurchaseRequest {
         private int row;
         private int column;
@@ -14,6 +15,7 @@ public class SeatDto {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class PurchaseResponse {
         private String token;
         private SeatResponse ticket;
@@ -21,6 +23,18 @@ public class SeatDto {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ReturnResponse {
+        private SeatResponse ticket;
+
+        public ReturnResponse(Seat seat) {
+            this.ticket = new SeatResponse(seat);
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class SeatResponse {
         private int row;
         private int column;
@@ -32,11 +46,5 @@ public class SeatDto {
             this.price = seat.getPrice();
 
         }
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class Token {
-        private String token;
     }
 }

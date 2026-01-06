@@ -1,6 +1,8 @@
 package irmalerrr.cinemaRest;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,4 +21,10 @@ public class CinemaHallDto {
                 .collect(Collectors.toList());
     }
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Token {
+        private String token;
+    }
 }

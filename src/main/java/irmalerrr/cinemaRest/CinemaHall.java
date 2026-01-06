@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 public class CinemaHall {
@@ -12,6 +13,7 @@ public class CinemaHall {
     private int columns;
     private List<Seat> seats;
     private Statistic statistic;
+    private List<Reserved> reserved = new ArrayList<>();
 
     public CinemaHall(int rows, int columns) {
         this.rows = rows;
@@ -26,5 +28,28 @@ public class CinemaHall {
         }
 
     }
-}
 
+    public String bookSeat(Seat seat) {
+        Reserved temp = new Reserved(seat);
+        reserved.add(temp);
+        seat.setBooked(true);
+        this.getStatistic().changeStatistic(1, seat.getPrice());
+        return temp.getToken();
+    }
+
+    public Seat returnSeat(String token) {
+        for (Reserved reserv : this.getReserved()) {
+            if (Objects.equals(reserv.getToken(), token)) {
+                Seat seat = reserv.getSeat();
+                if (seat.isBooked()) {
+                    seat.setBooked(false);
+                    this.getStatistic().changeStatistic(-1, -seat.getPrice());
+                    return seat;
+                } else {
+                    throw new BadRequestException("Wrong token!");
+                }
+            }
+        }
+        throw new BadRequestException("Wrong token!");
+    }
+}
